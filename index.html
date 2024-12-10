@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Documentos Legais</title>
+    <style>
+        /* Estilos Globais */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Cabeçalho */
+        header {
+            background-color: #1f1f1f;
+            color: #f5f5f5;
+            padding: 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        header h1 {
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        /* Container principal */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: #1f1f1f;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Títulos */
+        h2, h3 {
+            color: #bb86fc;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Campo de entrada */
+        label {
+            font-size: 14px;
+            color: #bb86fc;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #2c2c2c;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: border 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border: 1px solid #bb86fc;
+            outline: none;
+        }
+
+        button {
+            background-color: #bb86fc;
+            color: #1f1f1f;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #9a67ea;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #7f50c3;
+        }
+
+        /* Div de documentos gerados */
+        .output {
+            display: none;
+            margin-top: 40px;
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .output-content {
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 8px;
+            overflow: auto;
+            max-height: 500px;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+
+        /* Rodapé */
+        footer {
+            background-color: #1f1f1f;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 14px;
+            color: #757575;
+            margin-top: 30px;
+        }
+
+        /* Animação de carregamento */
+        .loading {
+            text-align: center;
+            margin: 40px auto;
+        }
+
+        .loading span {
+            font-size: 20px;
+            color: #bb86fc;
+            animation: loadingAnimation 1.5s infinite;
+        }
+
+        @keyframes loadingAnimation {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Gerador de Documentos Legais</h1>
+</header>
+
+<div class="container">
+    <h2>Preencha as Informações</h2>
+    <p>Preencha os campos abaixo para gerar os documentos legais personalizados para o seu site ou empresa.</p>
+
+    <label for="siteName">Nome do Site/Empresa:</label>
+    <input type="text" id="siteName" placeholder="Exemplo: Minha Empresa">
+
+    <label for="contactInfo">Informações de Contato:</label>
+    <input type="text" id="contactInfo" placeholder="Exemplo: contato@empresa.com ou (11) 99999-9999">
+
+    <label for="lastUpdate">Data da Última Atualização:</label>
+    <input type="text" id="lastUpdate" placeholder="Exemplo: 01/01/2024">
+
+    <button id="generateBtn">Gerar Documentos</button>
+
+    <div class="loading" id="loading" style="display: none;">
+        <span>Gerando documentos...</span>
+    </div>
+
+    <div class="output" id="output">
+        <h3>Documentos Gerados</h3>
+        <div class="output-content" id="outputContent"></div>
+        <button id="printPDFBtn">Imprimir/Salvar como PDF</button>
+    </div>
+</div>
+
+<footer>
+    &copy; 2024 Gerador de Documentos Legais. Todos os direitos reservados.
+</footer>
+
+<script>
+    document.getElementById('generateBtn').addEventListener('click', generateDocuments);
+    document.getElementById('printPDFBtn').addEventListener('click', printPDF);
+
+    function generateDocuments() {
+        const siteName = document.getElementById("siteName").value;
+        const contactInfo = document.getElementById("contactInfo").value;
+        const lastUpdate = document.getElementById("lastUpdate").value;
+
+        if (!siteName || !contactInfo || !lastUpdate) {
+            alert("Por favor, preencha todos os campos antes de gerar os documentos.");
+            return;
+        }
+
+        // Exibe o loading enquanto os documentos são gerados
+        document.getElementById("loading").style.display = "block";
+
+        setTimeout(() => {
+            let documentsContent = `
+            <h2>Privacy Policy (Política de Privacidade)</h2>
+            <p><strong>Última atualização:</strong> ${lastUpdate}</p>
+            <p>Esta Política de Privacidade descreve como ${siteName} coleta, usa, compartilha e protege as informações pessoais que você nos fornece ao acessar nosso site e utilizar nossos serviços. Nosso compromisso é proteger sua privacidade e garantir que seus dados pessoais sejam tratados com segurança.</p>
+            <h3>1. Informações que Coletamos</h3>
+            <p>Coletamos informações pessoais que você nos fornece diretamente, como ao preencher formulários, registrar-se para nossos serviços ou nos contatar diretamente. As informações podem incluir:</p>
+            <ul>
+                <li>Nome completo</li>
+                <li>Endereço de e-mail</li>
+                <li>Endereço de correspondência</li>
+                <li>Informações de pagamento</li>
+                <li>Informações de login (usuário e senha)</li>
+                <li>Informações sobre o uso do nosso site, como seu endereço IP, tipo de dispositivo e atividades online</li>
+            </ul>
+            <h3>2. Como Usamos as Suas Informações</h3>
+            <p>As informações coletadas são usadas para:</p>
+            <ul>
+                <li>Fornecer, personalizar e melhorar nossos serviços.</li>
+                <li>Comercializar e promover nossos produtos e serviços.</li>
+                <li>Proteger a segurança de nossa plataforma e nossos usuários.</li>
+                <li>Cumprir com obrigações legais e regulatórias.</li>
+            </ul>
+            <h3>3. Compartilhamento de Informações</h3>
+            <p>Podemos compartilhar suas informações pessoais com terceiros nas seguintes circunstâncias:</p>
+            <ul>
+                <li>Com prestadores de serviços que nos ajudam a operar nosso site ou a oferecer serviços a você.</li>
+                <li>Quando exigido por lei, como para cumprir com processos judiciais ou solicitações governamentais.</li>
+                <li>Em caso de fusão ou venda de nossos ativos empresariais, onde suas informações podem ser transferidas para a parte adquirente.</li>
+            </ul>
+            <h3>4. Seus Direitos</h3>
+            <p>Você tem o direito de acessar, corrigir, excluir ou limitar o uso das suas informações pessoais. Também pode retirar o seu consentimento para o uso de seus dados a qualquer momento. Além disso, você tem o direito de solicitar a portabilidade dos dados pessoais que nos forneceu.</p>
+            <h3>5. Medidas de Segurança</h3>
+            <p>Adotamos medidas de segurança adequadas para proteger suas informações pessoais contra acesso não autorizado, alteração, divulgação ou destruição. No entanto, nenhum método de transmissão ou armazenamento eletrônico é 100% seguro, e não podemos garantir total segurança.</p>
+            <h3>6. Transferências Internacionais</h3>
+            <p>Em alguns casos, suas informações pessoais podem ser transferidas para fora do seu país de residência, para atender a serviços que utilizam infraestrutura internacional. Garantimos que essas transferências sejam feitas de acordo com as leis de proteção de dados aplicáveis.</p>
+            <hr>
+
+            <h2>Terms & Conditions (Termos e Condições)</h2>
+            <p><strong>Última atualização:</strong> ${lastUpdate}</p>
+            <p>Este documento estabelece os termos e condições para o uso dos serviços fornecidos por ${siteName}. Ao acessar ou utilizar nossos serviços, você concorda em cumprir os seguintes termos e condições:</p>
+            <h3>1. Uso do Serviço</h3>
+            <p>Você concorda em usar nossos serviços de maneira legal e em conformidade com todas as leis aplicáveis. O uso indevido dos nossos serviços pode resultar na suspensão ou rescisão da sua conta. É proibido realizar atividades ilegais, como violar direitos de propriedade intelectual ou disseminar conteúdos prejudiciais.</p>
+            <h3>2. Direitos de Propriedade Intelectual</h3>
+            <p>Todo o conteúdo fornecido por ${siteName}, incluindo texto, gráficos, imagens, logotipos, software e outros materiais, é protegido por direitos autorais e outras leis de propriedade intelectual. Você concorda em não reproduzir, distribuir, modificar, exibir publicamente ou criar obras derivadas sem a nossa permissão expressa.</p>
+            <h3>3. Limitação de Responsabilidade</h3>
+            <p>O ${siteName} não se responsabiliza por danos indiretos, incidentais ou consequenciais resultantes do uso dos nossos serviços. A nossa responsabilidade é limitada ao valor pago pelos serviços prestados, no caso de erro ou falha.</p>
+            <h3>4. Modificações dos Termos</h3>
+            <p>Podemos modificar estes termos a qualquer momento, e recomendamos que você revise periodicamente esta página para manter-se atualizado sobre nossas condições. O uso contínuo de nossos serviços após a alteração dos termos implica na sua aceitação das novas condições.</p>
+            <hr>
+
+            <h2>Cookies Policy (Política de Cookies)</h2>
+            <p><strong>Última atualização:</strong> ${lastUpdate}</p>
+            <p>Este site utiliza cookies para melhorar a sua experiência de navegação. Cookies são pequenos arquivos de texto armazenados no seu dispositivo para armazenar informações sobre as suas preferências e atividades no site.</p>
+            <h3>1. Tipos de Cookies Utilizados</h3>
+            <ul>
+                <li><strong>Cookies Essenciais:</strong> Necessários para o funcionamento básico do site, como autenticação de usuários, segurança e carregamento de conteúdo.</li>
+                <li><strong>Cookies de Performance:</strong> Usados para monitorar a performance e melhorar a funcionalidade do site, como analisar tempo de resposta e uso das páginas.</li>
+                <li><strong>Cookies de Funcionalidade:</strong> Permitem lembrar preferências e configurações do usuário, como idioma ou região.</li>
+                <li><strong>Cookies de Publicidade:</strong> Utilizados para personalizar anúncios e ofertas para os usuários, baseados em seu comportamento e preferências.</li>
+            </ul>
+            <h3>2. Como Controlar Cookies</h3>
+            <p>Você pode controlar os cookies nas configurações do seu navegador. No entanto, desabilitar cookies pode afetar a funcionalidade do site, e alguns recursos podem não funcionar corretamente. Para mais informações, consulte a seção "Ajuda" do seu navegador.</p>
+            <h3>3. Cookies de Terceiros</h3>
+            <p>Alguns cookies podem ser colocados por terceiros, como parceiros publicitários e ferramentas de análise. Estes cookies podem coletar informações sobre suas atividades em diferentes sites para personalizar anúncios e conteúdo.</p>
+            <hr>
+
+            <h2>Disclaimer (Aviso Legal)</h2>
+            <p><strong>Aviso Legal:</strong> O ${siteName} fornece informações sobre diversos assuntos. No entanto, as informações aqui contidas são para fins informativos e não devem ser interpretadas como consultoria profissional. O uso do nosso site e serviços é de sua exclusiva responsabilidade.</p>
+            <p>O ${siteName} não se responsabiliza por informações imprecisas ou desatualizadas e não garante a precisão, integridade ou confiabilidade do conteúdo apresentado. As informações podem ser alteradas sem aviso prévio, e recomendamos que consulte profissionais qualificados para questões específicas.</p>
+            <p>Além disso, não nos responsabilizamos por links para sites de terceiros. O uso de sites externos é feito por sua própria conta e risco, e o ${siteName} não tem controle sobre o conteúdo ou práticas desses sites.</p>
+            `;
+
+            // Atualiza o conteúdo gerado
+            document.getElementById("outputContent").innerHTML = documentsContent;
+            document.getElementById("output").style.display = "block";
+            document.getElementById("loading").style.display = "none";
+        }, 2000); // Simula o tempo de carregamento
+    }
+
+    // Função para impressão ou salvar como PDF
+    function printPDF() {
+        const printWindow = window.open("", "_blank");
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Documentos Legais</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+                        h2 { color: #333; }
+                        hr { margin: 20px 0; }
+                    </style>
+                </head>
+                <body>${document.getElementById("outputContent").innerHTML}</body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+</script>
+
+</body>
+</html>
